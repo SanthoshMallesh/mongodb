@@ -1,0 +1,72 @@
+
+Important Note : Updating before make a find query filter result and confirm result once than cope the find query logic filter and apply with update filter.
+
+
+1. updateOne()
+
+	1.1 db.users.updateOne({ _id : ObjectId("323432dfsdfsfsddf324")}, {$set : {hobbies : [{ title : "sports", frequency : 5}]} }) // $set will keep existing fields untouch 
+	
+	
+2. updateMany()
+
+	2.1 db.users.updateMany({ "hobbies.title" : "Sports" }, {$set : {isSporty : true } } ) // updates all the documents matches with "hobbies.title" : "Sports"
+	
+	2.2 db.users.updateMany({ _id : ObjectId("323432dfsdfsfsddf324")}, {$set : {age : 10, phone :  1234567890} })
+	
+	2.3 db.users.updateMany({hobbies : { $elemMatch : {title: "sports", frequency : {$gte : 3 }} } } , {$set : { "hobbies.$.highFrequency" : true }});
+	
+3. Increment / Decrement
+
+	3.1 db.users.updateOne({name : "Rahul"}, {$inc : {age : 1}} ) // Increment 
+	
+	3.2 db.users.updateOne({name : "Rahul"}, {$inc : {age : -1}} ) // Increment 
+	
+	3.3 db.users.updateOne({name : "Rahul"}, {$inc : {age : 1}, $set : {isSporty : false } )
+	
+
+4. Minimum, Maximum & Multiple
+
+	4.1 db.users.updateOne({name : "Rahul"}, {$min : {age : 35}}) // Only changes when age in db is lesser than 35
+	
+	4.2 db.users.updateOne({name : "Rahul Dravid"}, {$max : {age : 38}})// Only changes when age in db is greater than 38
+	
+	4.3 db.users.updateOne({name : "Rahul Dravid"}, {$mul : {age : 1.1 }})
+	
+
+5. Drop field 
+
+	5.1 db.users.updateMany({isSporty : true }, {$set : { phone : null } } ) // not perfect solution
+	
+	5.2 db.users.updateMany({isSporty : true }, {$unset : { phone : "" } } ) // This will drop phone field
+	
+6. Rename Fields 
+
+	6.1 db.users.updateMany({} , {$rename : { age : "totalAge"} }) // rename age field to totalAge
+	
+7. Upsert - Insert / Update 
+
+
+	7.1 db.users.updateMany({name : "Maria"} , {$set : {age : 29, hobbies : [{title :  "good food" }]}}, {upsert : true } ) // docuemnt doesnt match it will inset 
+	
+8. Array all array update 
+
+	8.1 db.users.updateMany({totalAge : {$gt : 30 }, {$inc : {"hobbies.$[].frequency" : -1} } }) // add / update frequency filed to all Array of object fields and decrese by 1
+	
+9. Find and updating specific field
+
+	9.1 db.users.updateMany({"hobbies.frequency" : {$gt : 2 }}, {$set : {"hobbies.$[el].goodFrequency" : true}}, {arrayFilters : [{"el.frequency" : {$gt : 2 }}]})
+	
+10. Adding Elements to Array
+	
+	10.1 db.users.updateOne({name : "Maria" }, {$push : {hobbies : { title : "Sports", frequency : 2} } }) // can add same data multipal times 
+	
+	or 
+	
+	10.2 db.users.updateOne({name : "Maria" }, {$addToSet : {hobbies : { title : "Hikking", frequency : 2}} } ) // can't have add same data multipal times
+	
+11. Removing Element from Array
+
+	11.1 db.users.updateOne({name : "Maria" }, {$pull : {hobbies : { title : "Hikking"} } })
+	
+	11.2 db.users.updateOne({name : "Maria" }, {$pop : {hobbies : 1 }})// Removing last element from array
+	

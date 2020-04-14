@@ -1,0 +1,154 @@
+1. Insert :
+
+  db.flightData.insertOne(
+		  {
+			"departureAirport" : "MUC",
+			"arrivalAirport" : "SFO",
+			"aircraft" : "Airbus A380",
+			"distance" : 1200,
+			"intercontiental" : true
+		}
+	)
+  
+1.1  InsertMany
+
+  db.flightData.insertMany( 
+		[
+			{
+				"departureAirport" : "MUC",
+				"arrivalAirport" : "SFO",
+				"aircraft" : "Airbus A380",
+				"distance" : 1200,
+				"intercontiental" : true
+			},
+			{
+				"departureAirport" : "ABC",
+				"arrivalAirport" : "EFG",
+				"aircraft" : "Airbus A480",
+				"distance" : 2200,
+				"intercontiental" : true
+			}
+		]
+	)
+  
+-----------------------------------------------------------------------------------------------------------------------------------------------------------  
+  
+  
+2. Find [ Will give first 20 document]
+
+	db.flightData.find().pretty()
+	or
+	db.flightData.find({ distance : 1200}).pretty()
+	or
+	db.flightData.find({ distance : {$gt : 1000}}).pretty()
+	
+2.1 FindOne
+
+	db.flightData.findOne()
+	or
+	db.flightData.findOne({ distance : {$gt : 1000}})
+	
+2.2 Getting Single value by query
+
+	db.flightData.findOne().documentKeyName
+
+	
+	find() Will Give Cursor
+
+2.3. toArray()  [ Cursor - We will get all the data in document]
+	
+	db.flightData.find().toArray()
+	
+	or 
+	
+2.4 forEach()
+	
+	db.flightData.find().forEach((fligtDataFromDoc) => { printjson(fligtDataFromDoc)})
+	
+-----------------------------------------------------------------------------------------------------------------------------------------------------------  
+  	
+
+	
+3. UpdateOne / Update [ We should use $set or else it will Replace Entire document ] 
+
+	db.flightData.updateOne(
+		{distance: 1200},
+		{$set: {addingNewEntry : "this is updatOne"}}
+	)
+	
+	or 
+	
+	db.flightData.update(
+		{distance: 1200},
+		{$set: {addingNewEntry : "this is updatOne"}}
+	)
+
+3.1. UpdateMany / Update [ We should use $set or else it will Replace Entire document ] 
+
+	db.flightData.updateMany(
+		{},
+		{$set : {addingNewEntry : "toDelete" }}
+	)
+	
+	or 
+	
+	db.flightData.update(
+		{},
+		{$set : {addingNewEntry : "toDelete" }}
+	)
+	
+3.2 Update as Embeded Document
+
+
+	db.flightData.updateMany(
+		{},
+		{$set : {
+				status : {
+					description : "on-time",
+					lastUpdated : "1 hour ago"
+				}
+					
+			}}
+	)
+	
+	
+	
+-----------------------------------------------------------------------------------------------------------------------------------------------------------  
+  
+
+
+4. ReplaceOne / Update [Replace Entire document if we wont use $set in update]
+
+	Note : Entire document will be replaced to matching filter {"aircraft" : "Airbus A380"}
+
+	db.flightData.replaceOne(
+		{"aircraft" : "Airbus A380"}, 
+		{ "departureAirport" : "xyz"}
+	)
+	
+	or 
+	
+	db.flightData.update(
+		{"aircraft" : "Airbus A380"}, 
+		{ "departureAirport" : "xyz"}
+	)
+	
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------  
+  
+
+5. DeleteOne
+
+	db.flightData.deleteOne(
+		{addingNewEntry : "toDelete"}
+	)
+
+5.1. DeleteMany
+
+	db.flightData.deleteMany(
+		{addingNewEntry : "toDelete"}
+	)
+	
+	
+-----------------------------------------------------------------------------------------------------------------------------------------------------------  
+  

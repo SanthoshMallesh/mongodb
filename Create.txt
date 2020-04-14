@@ -1,0 +1,157 @@
+Create
+
+1. Insert :
+
+  db.flightData.insertOne(
+		  {
+			"departureAirport" : "MUC",
+			"arrivalAirport" : "SFO",
+			"aircraft" : "Airbus A380",
+			"distance" : 1200,
+			"intercontiental" : true
+		}
+	)
+	
+	Note: After inserting data into mongosb it will return ObejctId as below
+	
+		{
+			"acknowledged" : true,
+			"insertedIds" : [
+				ObjectId("234fsdfsf33423sdfsd")
+			]
+			
+		}
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------  
+  
+  
+2.  InsertMany
+
+  db.flightData.insertMany( 
+		[
+			{
+				"departureAirport" : "MUC",
+				"arrivalAirport" : "SFO",
+				"aircraft" : "Airbus A380",
+				"distance" : 1200,
+				"intercontiental" : true
+			},
+			{
+				"departureAirport" : "ABC",
+				"arrivalAirport" : "EFG",
+				"aircraft" : "Airbus A480",
+				"distance" : 2200,
+				"intercontiental" : true
+			}
+		]
+	)
+	
+	Note: After inserting data into mongosb it will return ObejctId as below
+	
+		{
+			"acknowledged" : true,
+			"insertedIds" : [
+				ObjectId("234fsdfsf33423sdfsd"),
+				ObjectId("345345345sfsdf34433")
+			]
+			
+		}
+	
+-----------------------------------------------------------------------------------------------------------------------------------------------------------  
+  	
+	
+3. Insert
+
+   db.flightData.insert(
+		{
+			"departureAirport" : "MUC",
+			"arrivalAirport" : "SFO"
+		}
+	) 
+	
+	
+	Note: After inserting data into mongosb it will return "WriteResult()" as below
+	
+	WriteResult({ "nInserted" : 1})
+	
+	1. For one document insertion will give "WriteResult({ ... })"
+	2. For multipal document insertion will give "BulkWriteResult({ ... })"
+	
+	
+-----------------------------------------------------------------------------------------------------------------------------------------------------------  
+  
+
+4. Ordered Insert - If we get error in middle of insertion of document, than nothing will insert after error. exection will stop.
+
+	Note : By default insertOne(), insertMany(), insert() are Ordered insertion that is { ordered : true }.
+		
+	db.flightData.insert(
+		{
+			"departureAirport" : "MUC",
+			"arrivalAirport" : "SFO"
+		},
+		{ ordered : false}
+	) 
+	
+	Note : Making { ordered : false} exection will doesn't stops after getting error in middle of insertion.
+	
+-----------------------------------------------------------------------------------------------------------------------------------------------------------  
+  	
+
+5. WriteConcern - Default { writeConcern : { w: 1, j : false}} / { writeConcern : { w: 1, j : undefined}}
+
+	5.1 : { writeConcern : { w: 1} }
+	
+	By doing { writeConcern : { w: 0} } data will be not stored and ObejctId will be not created in DB.
+
+	db.flightData.insert(
+		{
+			"departureAirport" : "MUC",
+			"arrivalAirport" : "SFO"
+		},
+		{ writeConcern : { w: 0}}
+	) 
+	
+	output : { "acknowledged" : false }
+	
+	
+	----------------------------------------------------------------------------- 
+  
+	
+	5.2 : { writeConcern : { w: 1, j : true}}
+	
+	By doing { writeConcern : { w: 1, j : true} } this will write to journal and db both
+	
+	db.flightData.insert(
+		{
+			"departureAirport" : "MUC",
+			"arrivalAirport" : "SFO"
+		},
+		{ writeConcern : { w: 1, j : true}}
+	) 
+	
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------  
+  
+	
+6. Atomicity : Mongodb will successed as a whole or fail as a whole while inserting document. [this will act as roll back if needed]
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------  
+ 
+
+7. Importing 
+
+	Note 	: Be in the path of filename.json folder in your terminal
+	
+	syntax 	: mongoimport <filenma.json> -d <databaseName> -c <collectionName> --jsonArray --drop
+ 
+	Example : mongoimport tv-shows.json -d movieData -c movies --jsonArray --drop
+	
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------  
+ 
+	
+	
+	
+	

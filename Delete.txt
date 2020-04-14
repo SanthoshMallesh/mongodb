@@ -1,0 +1,20 @@
+
+1. deleteOne
+
+	1.1 db.users.deleteOne({name : "Chris"})
+	
+2. deleteMany
+	
+	2.1 db.users.deleteMany({totalAge : {$gt : 30}, isSporty : true })
+	
+3. Delete all entries in a collection
+
+	3.1 db.users.deleteMany({})
+		
+		or
+		
+		db.users.drop()
+		
+4. Delete Database 
+
+	4.1 db.dropDatabase()

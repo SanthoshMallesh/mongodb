@@ -1,0 +1,12 @@
+Projection [ Project what you want to show as outcome]
+
+1. db.flightData.find({}, {"distance" : 2200})
+
+In above query we have used find method which taking 2 args 
+
+	Arg 1. Empty Filter
+	Arg 2. Projection
+	
+2. db.flightData.find({}, {"distance" : 2200, _id: 0})
+
+	Arg 2. Projection can take 2 args like Include and Exclude [_id will be excluded which was default while outcome]

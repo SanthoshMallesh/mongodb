@@ -1,0 +1,13 @@
+
+DataRtype 
+
+
+
+
+db.flightData.insertOne(
+{employee : 33, funding : 12345678901234567890, 
+    details : { ceo : "santhosh"}, 
+    tags : ['super', 'perfect', 123, 456],
+    foundingDate : new Date(), 
+    insertedAt: new Timestamp()}
+)

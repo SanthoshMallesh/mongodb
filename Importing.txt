@@ -1,0 +1,10 @@
+Import
+
+1. Importing 
+
+	Note 	: Be in the path of filename.json folder in your terminal
+	
+	syntax 	: mongoimport <filenma.json> -d <databaseName> -c <collectionName> --jsonArray --drop
+ 
+	Example : mongoimport tv-shows.json -d movieData -c movies --jsonArray --drop
+	

@@ -1,0 +1,145 @@
+
+1. findOne()
+
+	db.movies.findOne()
+	or
+	db.movies.findOne({ language : "English" })
+	
+2. find()
+
+	2.1 db.movies.find().pretty()
+	
+	2.2 db.movies.find({ language : "English" }).pretty()
+	
+	
+	Logical Operators
+	
+	
+	2.3 db.movies.find({ "rating.average" : {$gt : 6.5}}).pretty()
+	
+	2.4 db.movies.find({ listArray : "Drama" }).pretty()
+	
+	2.5 db.movies.find({ listArrayMatchOnlyOne : ["Drama"] }).pretty()
+	
+	2.6 db.movies.find({ runtime : {$in : [30, 42]}}).pretty()
+	
+	2.7 db.movies.find({ runtime : {$nin : [30, 42]}}).pretty()
+	
+	2.8 db.movies.find({ "rating.average" : {$lt : 3}}).pretty()
+	
+	2.9 db.movies.find({ "rating.average" : {$lt : 3}}).count()
+	
+	2.10 db.movies.find({ "rating.average" : {$gt : 3}}).pretty()
+	
+	2.11 db.movies.find({ $or : [ {"rating.average" : {$lt : 5 } },  {"rating.average" : {$gt : 9.3} } ] }).pretty()
+	
+	2.12 db.movies.find({ $nor : [ {"rating.average" : {$lt : 5 } },  {"rating.average" : {$gt : 9.3} } ] }).pretty()
+	
+	2.13 db.movies.find({ $and : [ {"rating.average" : {$gt : 9 } },  { genres : "Drama" } ] }).pretty()	
+	
+		or 
+		
+		db.movies.find({ "rating.average" : {$gt : 9 }, genres : "Drama" }).pretty()	
+		
+	Note : While filtering Array List, we should not filter with same key twice. Javascipt doesn't give error but will endup with wrong result as below
+	
+	Wrong : db.movies.find({genres : "Drama", genres : "Horror"}).pretty()	
+	
+	Correct : db.movies.find({ $and : [ {genres : "Drama" } , { genres : "Horror"} ] }).pretty()
+	
+	2.14 db.movies.find({ runtime : { $not : {$eq : 60 } } }).pretty()
+	
+		or 
+		
+		db.movies.find({ runtime : { $ne : 60 } } ).pretty()
+		
+		
+		
+	Element Operators
+	
+	
+	2.15 db.users.find({ age : {$exists : true, $ne : null}}).pretty()
+	
+	2.16 db.users.find({ phone : {$type : "number"}}).pretty()
+		
+		or 
+	
+		db.users.find({ phone : {$type : "double"}}).pretty()
+		
+		or 
+		
+		db.users.find({ phone : {$type : ["double", "string"]}}).pretty()
+	
+	
+	Evaluation Operators
+	
+	Note : Summary filed holds paragraphs as a value
+	
+	2.17 db.movies.find({summary : "musical"}).pretty()
+	
+		Note : Above will not work for paragraphs / text search, solution is 'regex'
+		
+		db.movies.find({summary : { $regex : /musical/ } }).pretty()			--> not efficient way, insted of regex we should go for text index
+		
+	2.18 db.sales.find({$expr : {$gt : ["$volume","$target"]} }).pretty()
+	
+		Note : ["$volume","$target"] fields in collections checking which is greater
+		
+	2.19 db.sales.find({$expr : {$gt : [ {$cond : {if : {$gte : ["$volume" , 190] }, then : {$subtract : ["$volume" , 10] }, else : "$volume" } }, "$target" ]} }).pretty()
+	
+		Note : Above query says, If "$volume" greater than or equal to 190 then subtract 10 from "$volume" else print "$volume" and than compare greater than with "$target"
+		
+
+3. Array 
+		
+	Note : "hobbies.title" is embeded document which holds Array of object
+		
+	3.1 db.users.find({ "hobbies.title" : "Sports" }).pretty()
+	
+	
+	3.2 db.users.find({ hobbies : {$size : 3 }}).pretty();	// checking array lenght of 3
+	
+	3.3 db.moviestarts.find({genre : { $all : ["action" , "thriller" ] } }).pretty(); // $all will check in all the document, which is not depend on order of array data
+	
+	3.4 db.moviestarts.find({$and : [{ "hobbies.title" : "Sports" } , { "hobbies.frequency" : {$gte : 2 } }  ] }).pretty(); // this will check hobbies.title and hobbies.frequency in all possible fields
+	
+	3.5 db.moviestarts.find({hobbies: { $elemMatch : {title : "Sports", frequency: {$gte : 2} } } }).pretty(); // This will only search in hobbies array and particular document
+	
+	
+4. Cursors
+
+	4.1 db.movies.find().count()
+	
+	4.2 db.movies.find().pretty() // this will give first 20 document
+	
+	4.3 db.movies.find().next() // will give one docuemnt which each execuation of query
+	
+	4.4 db.movies.find().forEach(doc => { printjson(doc)}) // this will give all the document 
+	
+	4.5 db.movies.find().hasNext() // returns true / false [ it will check doucment is avaliabel to output or not]
+	
+	4.6 db.movies.find().sort({"rating.average" : 1 }).pretty() // sort the docuemnt where is 1 is ascending, -1 is descending
+	
+	4.7 db.movies.find().skip(10).pretty() // this will help in pagination 
+	
+	4.8 db.movies.find().limit(10).pretty() // this will help in pagination 
+	
+	
+5. Projection 
+	
+	5.1 db.movies.find({}, {name : 1, genres : 1, runtime : 1, "rating.average" : 1, _id : 0})pretty() 
+
+	5.2 db.movies.find({ genres : "Drama"}, {"genre.$" : 1}).pretty() // this will give only genres array of Drama value, other genres array value doesnot dispay
+
+	Note : What if we want to filter array "genres" with value "Drama" and disply only other value "Horror" in the same array. Below is the soultion 5.3
+	
+	5.3 db.movies.find({ genres : "Drama"}, { genres : {elemMatch : {$eq : "Horror" } } }).pretty()
+	
+	5.4 db.movies.find({ genres : "Drama"}, { genres : {$slice : 2 } }).pretty() // After filter, display first 2 fileds of "genres" Array
+	
+	
+	
+	
+	
+
+	
